@@ -29,36 +29,36 @@ object ChunkLoadGenerate {
     }
     fun shouldGenerate(key:String,loc:Location):Boolean{
         if(!ConfigObject.isChance(key)){
-           // debug("not chance")
+            debug("not chance")
             return false
         }
         if(!File(ConfigObject.getScheme(key)).exists()){
-           // debug("file not exist")
+            debug("file not exist")
             return false
         }
         if(!ConfigObject.getWorlds(key).contains(loc.world)){
-           // debug("world not include")
+            debug("world not include")
             return false
         }
         if(!ConfigObject.isHeight(key,loc)){
-         //   debug("not height")
+            debug("not height")
             return false
         }
         if(!ConfigObject.isBiome(key,loc.world!!.getBiome(loc))){
-          //  debug("not biome")
+            debug("not biome")
             return false
         }
         if(!ConfigObject.isAwayFromSpawn(key,loc)){
-          //  debug("not awayfromworld")
+            debug("not awayfromworld ${loc.world!!.spawnLocation}")
             return false
         }
         var disbet=ConfigObject.getDistBet(key)
         for (structure in StructureData.structures) {
             var p1=structure.pos1
             var p2=structure.pos2
-            var p3=Location(p1.world,(p1.x+p2.x)/2,(p1.y+p2.y)/2,(p1.z+p2.z)/2)
-            if(loc.distance(p3)<disbet){
-               // debug("not disbet")
+            var p3=Location(p1.world,(p1.x+p2.x)/2.0,(p1.y+p2.y)/2.0,(p1.z+p2.z)/2.0)
+            if(loc.world!!.name==p3.world!!.name&&loc.distance(p3)<disbet){
+                debug("not disbet")
                 return false
             }
         }
@@ -66,7 +66,7 @@ object ChunkLoadGenerate {
         var cnt=0
         StructureData.structures.forEach { if(it.key==key)cnt++ }
         if(cnt>=limit&&limit!=-1) {
-          //  debug("not limit")
+            debug("not limit")
             return false
         }
         var bottomlist=ConfigObject.getBottom_material(key)
@@ -79,7 +79,7 @@ object ChunkLoadGenerate {
             }
             if(!bottomMaterial.contains(loc.block.type)){
 
-               // debug("${loc.block.type}, not bottom")
+                debug("${loc.block.type}, not bottom")
            //     debug(loc.toString())
                 return false
             }
@@ -120,7 +120,7 @@ object ChunkLoadGenerate {
     @SubscribeEvent
     fun createStructures(e:ChunkLoadEvent) {
         if (ConfigObject.mode.equals("load", ignoreCase = true)) {
-            KDungeon.generateTaskScheduler.submit {
+            KDungeon.generateTaskScheduler?.submit {
                 generate(e.chunk)
             }
         }

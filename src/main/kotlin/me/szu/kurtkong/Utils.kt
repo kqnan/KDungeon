@@ -17,6 +17,7 @@ import com.sk89q.worldedit.world.block.BaseBlock
 import com.sk89q.worldedit.world.block.BlockState
 import com.sk89q.worldedit.world.block.BlockType
 import com.sk89q.worldedit.world.registry.BlockMaterial
+import me.szu.kurtkong.config.ConfigObject
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -27,7 +28,10 @@ import taboolib.module.chat.colored
 import kotlin.math.max
 import kotlin.math.min
 fun debug( str:String){
-    info(str)
+    if(ConfigObject.debug.booleanValue()){
+        info(str)
+        taboolib.platform.util.onlinePlayers.forEach { if(it.isOp)it.sendMessage(str) }
+    }
 }
 fun Location.toBlockVector3():BlockVector3{
     return BlockVector3.at(this.x,this.y,this.z)
@@ -39,6 +43,7 @@ fun Player.warn(str:String){
     this.sendMessage("&6[KDungeon]$str".colored())
 }
 fun Location.containWithin(loc1:Location,loc2:Location):Boolean{
+    if(this.world!!.name!=loc1.world!!.name)return false
     if(this.x>=min(loc1.x,loc2.x)&&this.x<=max(loc1.x,loc2.x)){
         if(this.y>=min(loc1.y,loc2.y)&&this.y<=max(loc1.y,loc2.y)){
             if(this.z>=min(loc1.z,loc2.z)&&this.z<=max(loc1.z,loc2.z)){

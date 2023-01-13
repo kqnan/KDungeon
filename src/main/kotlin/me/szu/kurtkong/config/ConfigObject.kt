@@ -20,6 +20,8 @@ object ConfigObject {
     lateinit var config:Configuration
     @ConfigNode(value="mode")
     lateinit var mode:String
+    @ConfigNode(value = "debug")
+    lateinit var debug:java.lang.Boolean
     private val  path="plugins/KDungeon/config.yml"
     init {
         FileWatcher.INSTANCE.addSimpleListener(File(path), Runnable {
@@ -43,14 +45,15 @@ object ConfigObject {
     fun getScheme(key: String):String{
         return config.getString("Structures.${key}.schema","")!!
     }
-    fun isAwayFromSpawn(key:String,loc:Location):Boolean{
+    fun isAwayFromSpawn(key:String, loc:Location):Boolean{
         var tmp= config.getString("Structures.${key}.awayFromSpawn")!!.removePrefix("[").removeSuffix("]").split(",")
 
         var min=tmp[0].toDouble()
         var max=tmp[1].toDouble()
         var spawn=loc.world!!.spawnLocation.clone()
-        spawn=spawn.add(0.0,-spawn.y,0.0)
-        var loc1=loc.clone().add(0.0,loc.y,0.0)
+        spawn.y=0.0
+        var loc1=loc.clone()
+        loc1.y=0.0
         return loc1.distance(spawn) in min..max
     }
     fun getDistBet(key:String):Double{
