@@ -1,5 +1,10 @@
 package me.szu.kurtkong
 
+import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.ProtocolLibrary
+import com.comphenix.protocol.events.PacketContainer
+import com.comphenix.protocol.wrappers.BlockPosition
+import com.comphenix.protocol.wrappers.WrappedBlockData
 import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.bukkit.BukkitBlockRegistry.BukkitBlockMaterial
@@ -15,7 +20,10 @@ import com.sk89q.worldedit.world.registry.BlockMaterial
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
+import org.bukkit.entity.Player
 import taboolib.common.platform.function.info
+import taboolib.common.platform.function.onlinePlayers
+import taboolib.module.chat.colored
 import kotlin.math.max
 import kotlin.math.min
 fun debug( str:String){
@@ -24,9 +32,15 @@ fun debug( str:String){
 fun Location.toBlockVector3():BlockVector3{
     return BlockVector3.at(this.x,this.y,this.z)
 }
+fun Player.info(str:String){
+    this.sendMessage("&a[KDungeon]$str".colored())
+}
+fun Player.warn(str:String){
+    this.sendMessage("&6[KDungeon]$str".colored())
+}
 fun Location.containWithin(loc1:Location,loc2:Location):Boolean{
     if(this.x>=min(loc1.x,loc2.x)&&this.x<=max(loc1.x,loc2.x)){
-        if(this.y>=min(loc1.y,loc2.y)&&this.y>=max(loc1.y,loc2.y)){
+        if(this.y>=min(loc1.y,loc2.y)&&this.y<=max(loc1.y,loc2.y)){
             if(this.z>=min(loc1.z,loc2.z)&&this.z<=max(loc1.z,loc2.z)){
                 return true
             }
@@ -68,4 +82,10 @@ fun Clipboard.place(loc: Location,pedestal:Material){
     this.close()
     editSession.flushQueue()
     editSession.close()
+}
+fun HideBlock(loc:Location,player: Player){
+    var packet=PacketContainer(PacketType.Play.Server.BLOCK_CHANGE)
+    packet.blockPositionModifier.write(0, BlockPosition(loc.blockX,loc.blockY,loc.blockZ))
+    packet.blockData.write(0, WrappedBlockData.createData(Material.AIR))
+     ProtocolLibrary.getProtocolManager().sendServerPacket(player,packet)
 }

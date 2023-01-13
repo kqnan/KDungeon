@@ -16,6 +16,11 @@ taboolib {
 
     classifier = null
     version = "6.0.10-55"
+    description {
+        dependencies{
+            name("ProtocolLib")
+        }
+    }
 }
 
 repositories {
