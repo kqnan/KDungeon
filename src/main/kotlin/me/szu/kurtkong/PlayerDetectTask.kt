@@ -3,6 +3,7 @@ package me.szu.kurtkong
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.util.nbt.CompoundBinaryTag
 import com.sk89q.worldedit.world.block.BaseBlock
+import me.szu.kurtkong.config.ConfigObject
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -10,14 +11,41 @@ import org.bukkit.entity.EntityType
 import taboolib.common.platform.function.onlinePlayers
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.sync
+import taboolib.common5.Baffle
 import taboolib.platform.util.toBukkitLocation
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.LongAccumulator
+import kotlin.math.max
+import kotlin.math.min
 
 class PlayerDetectTask :Runnable {
+
     override fun run() {
+        submitAsync (period = 100){
+            for (player in taboolib.platform.util.onlinePlayers) {
+                var loc= sync { player.location }
+
+                StructureData.structures.forEach {
+                    var loc1=it.pos1
+                    var loc2=it.pos2
+                    var offset=ConfigObject.hide.toDouble()
+                    var minp=Location(loc1.world,min(loc1.x,loc2.x),min(loc1.y,loc2.y),min(loc1.z,loc2.z))
+                    var maxp=Location(loc1.world,max(loc1.x,loc2.x),max(loc1.y,loc2.y),max(loc1.z,loc2.z))
+                    minp.add(-offset,-offset,-offset)
+                    maxp.add(offset,offset,offset)
+                    if(loc.containWithin(minp,maxp)){//·¢°üÒþ²ØÄ¾ÅÆ
+                        for (key in it.signs.keys) {
+                                HideBlock(key,player)
+                        }
+                    }
+
+                }
+            }
+        }
         while (true){
-            var players= onlinePlayers()
+            var players= taboolib.platform.util.onlinePlayers
             for (player in players) {
-                var loc= sync { player.location.toBukkitLocation() }
+                var loc= sync { player.location }
                 StructureData.structures.removeIf {
                     var loc1=it.pos1
                     var loc2=it.pos2

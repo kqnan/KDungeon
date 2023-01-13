@@ -24,9 +24,10 @@ object KDungeon : Plugin() {
         plugin=BukkitPlugin.getInstance()
         lazySpawn=Bukkit.getScheduler().runTaskAsynchronously(plugin, PlayerDetectTask())
         regcmd()
+        // generateTaskScheduler= GenerateTaskScheduler(10)
 
-    // generateTaskScheduler= GenerateTaskScheduler(10)
     }
+
     fun regcmd(){
         command("KDungeon", aliases = listOf("kd")){
             literal("place"){

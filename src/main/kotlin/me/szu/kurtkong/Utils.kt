@@ -92,5 +92,5 @@ fun HideBlock(loc:Location,player: Player){
     var packet=PacketContainer(PacketType.Play.Server.BLOCK_CHANGE)
     packet.blockPositionModifier.write(0, BlockPosition(loc.blockX,loc.blockY,loc.blockZ))
     packet.blockData.write(0, WrappedBlockData.createData(Material.AIR))
-     ProtocolLibrary.getProtocolManager().sendServerPacket(player,packet)
+    ProtocolLibrary.getProtocolManager().sendServerPacket(player,packet)
 }

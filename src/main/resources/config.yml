@@ -1,5 +1,6 @@
 debug: true
 mode: load  #可填 load 或populate 。表示在区块加载时还是创建时尝试生成遗迹
+hide: 30  #每多少tick发包隐藏木牌
 Structures:
   test:
     #原理图的路径

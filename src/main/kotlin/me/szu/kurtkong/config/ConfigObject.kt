@@ -22,6 +22,8 @@ object ConfigObject {
     lateinit var mode:String
     @ConfigNode(value = "debug")
     lateinit var debug:java.lang.Boolean
+    @ConfigNode(value = "hide")
+    lateinit var hide:java.lang.Double
     private val  path="plugins/KDungeon/config.yml"
     init {
         FileWatcher.INSTANCE.addSimpleListener(File(path), Runnable {
