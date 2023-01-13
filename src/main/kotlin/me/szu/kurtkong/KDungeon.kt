@@ -2,6 +2,7 @@ package me.szu.kurtkong
 
 import com.sk89q.worldedit.bukkit.BukkitWorld
 import me.szu.kurtkong.config.ConfigObject
+import me.szu.kurtkong.intergrate.SpawnMythicMobs
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -20,12 +21,17 @@ object KDungeon : Plugin() {
     var lazySpawn:BukkitTask?=null
     lateinit var plugin:JavaPlugin
     var generateTaskScheduler: GenerateTaskScheduler?=null
+    lateinit var playerDetectTask: PlayerDetectTask
     override fun onEnable() {
         plugin=BukkitPlugin.getInstance()
-        lazySpawn=Bukkit.getScheduler().runTaskAsynchronously(plugin, PlayerDetectTask())
+        playerDetectTask= PlayerDetectTask()
+        Bukkit.getScheduler().runTaskAsynchronously(plugin, playerDetectTask)
         regcmd()
         // generateTaskScheduler= GenerateTaskScheduler(10)
-
+        intergrate()
+    }
+    fun intergrate(){
+        playerDetectTask.registerProcessor("mm",SpawnMythicMobs.processor)
     }
 
     fun regcmd(){

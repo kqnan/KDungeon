@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.util.nbt.CompoundBinaryTag
 import com.sk89q.worldedit.world.block.BaseBlock
 import me.szu.kurtkong.config.ConfigObject
+import me.szu.kurtkong.lambdaFunc.SignProcessor
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -15,11 +16,35 @@ import taboolib.common5.Baffle
 import taboolib.platform.util.toBukkitLocation
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.LongAccumulator
+import java.util.function.BiFunction
 import kotlin.math.max
 import kotlin.math.min
 
 class PlayerDetectTask :Runnable {
 
+    private val signProcessor=HashMap<String,(Location,String,String)->Unit >()
+    constructor(){
+        signProcessor.put("[spawn]"){
+            loc,txt3,txt4->
+            sync {
+                var amt=txt4.toIntOrNull()?:1
+                for (i in 1..amt){
+                    loc.world?.spawnEntity(loc,try {
+                        EntityType.valueOf(txt3.uppercase())
+                    }catch (e:Exception){break})
+                }
+                loc.block.type=Material.AIR
+            }
+        }
+    }
+    fun registerProcessor(key:String,processor: (Location,String,String)->Unit){
+        if(signProcessor.containsKey(key)){
+            throw RuntimeException("已有相同键名的处理器")
+        }
+        else {
+            signProcessor[key] = processor
+        }
+    }
     override fun run() {
         submitAsync (period = 100){
             for (player in taboolib.platform.util.onlinePlayers) {
@@ -78,15 +103,17 @@ class PlayerDetectTask :Runnable {
                     //第二行为动作
                     //第三行为动作的参数
                     //第四行为动作的数量
-                    when (txt2) {
-                        "[spawn]" -> sync {
-                            var amt=txt4.toIntOrNull()?:1
-                            for (i in 1..amt){
-                                entry.key.world?.spawnEntity(entry.key, EntityType.valueOf(txt3.uppercase()))
-                            }
-                            entry.key.block.type = Material.AIR
-                        }
-                    }
+                    signProcessor[txt2]?.let { it(entry.key,txt3,txt4) }
+
+//                    when (txt2) {
+//                        "[spawn]" -> sync {
+//                            var amt=txt4.toIntOrNull()?:1
+//                            for (i in 1..amt){
+//                                entry.key.world?.spawnEntity(entry.key, EntityType.valueOf(txt3.uppercase()))
+//                            }
+//                            entry.key.block.type = Material.AIR
+//                        }
+//                    }
                 }
             }
         }

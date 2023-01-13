@@ -1,16 +1,9 @@
 package me.szu.kurtkong
 
-import net.minecraft.world.level.entity.ChunkEntities
+import me.szu.kurtkong.lambdaFunc.Function
 import org.bukkit.Bukkit
-import org.bukkit.Chunk
-import org.bukkit.ChunkSnapshot
-import org.bukkit.scheduler.BukkitTask
-import taboolib.common.LifeCycle
-import taboolib.common.platform.Awake
-import taboolib.common.platform.function.info
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.function.Consumer
 
 class GenerateTaskScheduler {
 
@@ -23,6 +16,7 @@ class GenerateTaskScheduler {
         }
 
     }
+
     fun stop(){
         threads.forEach {
             it.isStop=true
@@ -38,7 +32,7 @@ class GenerateTaskScheduler {
         }
         return s.toString()
     }
-    fun submit( task:Function){
+    fun submit( task: Function){
         var idx=0
         var minn=Int.MAX_VALUE
         threads.forEachIndexed { index, Task ->

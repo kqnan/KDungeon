@@ -19,6 +19,9 @@ taboolib {
     description {
         dependencies{
             name("ProtocolLib")
+            name("MythicMobs")
+            name("FastAsyncWorldEdit")
+
         }
     }
 }
