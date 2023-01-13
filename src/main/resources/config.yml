@@ -2,7 +2,8 @@ mode: load  #可填 load 或populate 。表示在区块加载时还是创建时�
 Structures:
   test:
     #原理图的路径
-    schema: "plugins\FastAsyncWorldEdit\schematics\test.schem"
+    schema: "plugins/FastAsyncWorldEdit/schematics/test.schem"
+    chance: 100  #填0~100的整数，有多少概率尝试一次生成
     #在什么世界生成
     world:
       - world
@@ -15,4 +16,4 @@ Structures:
     pedestal_material: GRASS_BLOCK #底座的材质
     bottom_material:
       - GRASS_BLOCK   #表示在什么介质上生成,ALL表示所有
-    chance: 100  #填0~100的整数，表示满足上述所有条件后,有多少概率生成
+

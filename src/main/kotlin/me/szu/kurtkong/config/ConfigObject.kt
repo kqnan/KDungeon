@@ -1,11 +1,10 @@
 package me.szu.kurtkong.config
 
+import com.sk89q.worldedit.bukkit.BukkitWorld
+import me.szu.kurtkong.debug
 import me.szu.kurtkong.info
 import me.szu.kurtkong.warn
-import org.bukkit.Bukkit
-import org.bukkit.Location
-import org.bukkit.Material
-import org.bukkit.World
+import org.bukkit.*
 import org.bukkit.block.Biome
 import taboolib.common.platform.function.info
 import taboolib.common.util.random
@@ -46,11 +45,12 @@ object ConfigObject {
     }
     fun isAwayFromSpawn(key:String,loc:Location):Boolean{
         var tmp= config.getString("Structures.${key}.awayFromSpawn")!!.removePrefix("[").removeSuffix("]").split(",")
+
         var min=tmp[0].toDouble()
         var max=tmp[1].toDouble()
         var spawn=loc.world!!.spawnLocation.clone()
         spawn=spawn.add(0.0,-spawn.y,0.0)
-        var loc1=loc.add(0.0,loc.y,0.0)
+        var loc1=loc.clone().add(0.0,loc.y,0.0)
         return loc1.distance(spawn) in min..max
     }
     fun getDistBet(key:String):Double{
@@ -62,15 +62,10 @@ object ConfigObject {
     fun getPedestal_Material(key:String):Material{
         return Material.valueOf(config.getString("Structures.${key}.pedestal_material","AIR")!!.uppercase())
     }
-    fun getBottom_material(key: String):ArrayList<Material>{
-        var res=ArrayList<Material>()
 
-        for (s in config.getStringList("Structures.${key}.bottom_material")) {
+    fun getBottom_material(key: String):List<String>{
 
-                res.add(Material.valueOf(s.uppercase()))
-            }
-
-        return res
+        return config.getStringList("Structures.${key}.bottom_material")
     }
     fun isChance(key: String):Boolean{
         return random(0, 100)<=config.getInt("Structures.${key}.chance")
@@ -91,7 +86,10 @@ object ConfigObject {
     fun isHeight(key:String,loc:Location):Boolean{
         var h: String? = config.getString("Structures.${key}.height") ?: return  false
         var hh=h!!
-        var hi=loc.world!!.getHighestBlockYAt(loc)
+
+        var hi=loc.world!!.getHighestBlockYAt(loc,HeightMap.WORLD_SURFACE)
+
+      //  debug("${loc.blockY} ${hi} ${h.equals("surface",ignoreCase = true)}")
         if(hh.startsWith("[")&&hh.endsWith("]")){
             var tmp= hh.removePrefix("[").removeSuffix("]").split(",")
             var h1=tmp[0].toInt()

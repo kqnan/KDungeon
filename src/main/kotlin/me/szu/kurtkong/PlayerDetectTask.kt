@@ -39,7 +39,7 @@ class PlayerDetectTask :Runnable {
 
     private  fun parseNBT(data:HashMap<Location,CompoundBinaryTag>){
         for (entry in data.entries) {
-            debug(entry.value.toString())
+          //  debug(entry.value.toString())
             if(entry.value.getString("id") == "minecraft:sign"){
                 //[spawn] [mm]
                 var txt1=entry.value.getString("Text1").split("\"")[3]

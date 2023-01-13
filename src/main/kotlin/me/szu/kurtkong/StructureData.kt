@@ -9,6 +9,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 object StructureData {
     //这里是否需要线程安全的容器
     val structures=CopyOnWriteArrayList<Structure>()
+
     fun addStructure(key:String ,clip:Clipboard,location: Location){
         var loc=location.toBlockVector3()
         var minp=loc.add(clip.minimumPoint.subtract(clip.origin))
