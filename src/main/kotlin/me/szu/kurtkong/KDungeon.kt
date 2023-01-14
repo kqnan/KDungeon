@@ -31,7 +31,7 @@ object KDungeon : Plugin() {
         intergrate()
     }
     fun intergrate(){
-        playerDetectTask.registerProcessor("mm",SpawnMythicMobs.processor)
+        playerDetectTask.registerProcessor("mm",SpawnMythicMobs.processor)   
     }
 
     fun regcmd(){
