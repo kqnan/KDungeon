@@ -3,6 +3,7 @@ package me.szu.kurtkong.intergrate
 import io.lumine.mythic.api.MythicPlugin
 import io.lumine.mythic.api.MythicProvider
 import io.lumine.mythic.api.adapters.AbstractLocation
+import io.lumine.mythic.bukkit.adapters.BukkitLocation
 import org.bukkit.Location
 
 object SpawnMythicMobs {
@@ -15,6 +16,7 @@ object SpawnMythicMobs {
     fun spawn(loc:Location,id:String){
         var moboption=MythicProvider.get().mobManager.getMythicMob(id)
         var mob=if(moboption.isPresent)moboption.get() else return
+
         mob.spawn(AbstractLocation(loc.world!!.name,loc.x,loc.y,loc.z) ,1.0)
     }
 }

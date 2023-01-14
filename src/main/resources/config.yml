@@ -3,6 +3,9 @@ mode: load  #可填 load 或populate 。表示在区块加载时还是创建时�
 hide: 30  #每多少tick发包隐藏木牌
 Structures:
   test:
+    icon:
+      material: paper
+      name: "测试遗迹"
     #原理图的路径
     schema: "plugins/FastAsyncWorldEdit/schematics/test.schem"
     chance: 100  #填0~100的整数，有多少概率尝试一次生成

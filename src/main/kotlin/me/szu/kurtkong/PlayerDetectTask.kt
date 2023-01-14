@@ -26,7 +26,7 @@ class PlayerDetectTask :Runnable {
     constructor(){
         signProcessor.put("[spawn]"){
             loc,txt3,txt4->
-            sync {
+
                 var amt=txt4.toIntOrNull()?:1
                 for (i in 1..amt){
                     loc.world?.spawnEntity(loc,try {
@@ -34,7 +34,7 @@ class PlayerDetectTask :Runnable {
                     }catch (e:Exception){break})
                 }
                 loc.block.type=Material.AIR
-            }
+
         }
     }
     fun registerProcessor(key:String,processor: (Location,String,String)->Unit){
@@ -103,17 +103,8 @@ class PlayerDetectTask :Runnable {
                     //第二行为动作
                     //第三行为动作的参数
                     //第四行为动作的数量
-                    signProcessor[txt2]?.let { it(entry.key,txt3,txt4) }
-
-//                    when (txt2) {
-//                        "[spawn]" -> sync {
-//                            var amt=txt4.toIntOrNull()?:1
-//                            for (i in 1..amt){
-//                                entry.key.world?.spawnEntity(entry.key, EntityType.valueOf(txt3.uppercase()))
-//                            }
-//                            entry.key.block.type = Material.AIR
-//                        }
-//                    }
+                    signProcessor[txt2]?.let { sync { it(entry.key,txt3,txt4) } }
+                    sync { entry.key.block.type=Material.AIR }
                 }
             }
         }

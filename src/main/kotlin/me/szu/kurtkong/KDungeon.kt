@@ -3,6 +3,7 @@ package me.szu.kurtkong
 import com.sk89q.worldedit.bukkit.BukkitWorld
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.intergrate.SpawnMythicMobs
+import me.szu.kurtkong.ui.GuiForStructures.openStructureGUI
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -29,9 +30,10 @@ object KDungeon : Plugin() {
         regcmd()
         // generateTaskScheduler= GenerateTaskScheduler(10)
         intergrate()
+
     }
     fun intergrate(){
-        playerDetectTask.registerProcessor("mm",SpawnMythicMobs.processor)   
+        playerDetectTask.registerProcessor("[mm]",SpawnMythicMobs.processor)
     }
 
     fun regcmd(){
@@ -57,6 +59,13 @@ object KDungeon : Plugin() {
                 execute<Player>{
                     sender, context, argument ->
                     sender.sendMessage("queue: $generateTaskScheduler")
+
+                }
+            }
+            literal("menu"){
+                execute<Player>{
+                    sender, context, argument ->
+                    sender.openStructureGUI()
 
                 }
             }

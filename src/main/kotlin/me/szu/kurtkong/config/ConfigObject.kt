@@ -6,9 +6,11 @@ import me.szu.kurtkong.info
 import me.szu.kurtkong.warn
 import org.bukkit.*
 import org.bukkit.block.Biome
+import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.info
 import taboolib.common.util.random
 import taboolib.common5.FileWatcher
+import taboolib.library.xseries.getItemStack
 import taboolib.module.configuration.Config
 import taboolib.module.configuration.ConfigNode
 import taboolib.module.configuration.Configuration
@@ -43,6 +45,9 @@ object ConfigObject {
             }
             }
         })
+    }
+    fun getIcon(key:String):ItemStack{
+        return config.getItemStack("Structures.${key}.icon")?:ItemStack(Material.PAPER)
     }
     fun getScheme(key: String):String{
         return config.getString("Structures.${key}.schema","")!!
