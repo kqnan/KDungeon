@@ -31,6 +31,8 @@ object ConfigObject {
         FileWatcher.INSTANCE.addSimpleListener(File(path), Runnable {
             config= Configuration.loadFromFile(File(path))
             mode= config.getString("load","populate")!!
+            debug= config.getString("debug","false")!!.toBoolean() as java.lang.Boolean
+            hide= config.getString("hide","30")!!.toDouble() as java.lang.Double
             for (key in config.getConfigurationSection("Structures")!!.getKeys(false)) {
                 var schema= config.getString("Structures.${key}.schema")
                 if(!File(schema).exists()){
@@ -47,7 +49,7 @@ object ConfigObject {
         })
     }
     fun getIcon(key:String):ItemStack{
-        return config.getItemStack("Structures.${key}.icon")?:ItemStack(Material.PAPER)
+        return config.getItemStack("Structures.${key}.icon")?: ItemStack(Material.PAPER)
     }
     fun getScheme(key: String):String{
         return config.getString("Structures.${key}.schema","")!!
@@ -97,7 +99,7 @@ object ConfigObject {
         var h: String? = config.getString("Structures.${key}.height") ?: return  false
         var hh=h!!
 
-        var hi=loc.world!!.getHighestBlockYAt(loc,HeightMap.WORLD_SURFACE)
+        var hi=loc.world!!.getHighestBlockYAt(loc.clone(),HeightMap.WORLD_SURFACE)
 
       //  debug("${loc.blockY} ${hi} ${h.equals("surface",ignoreCase = true)}")
         if(hh.startsWith("[")&&hh.endsWith("]")){

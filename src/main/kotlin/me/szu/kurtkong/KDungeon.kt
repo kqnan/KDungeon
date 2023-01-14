@@ -1,22 +1,17 @@
 package me.szu.kurtkong
 
-import com.sk89q.worldedit.bukkit.BukkitWorld
-import io.lumine.mythic.bukkit.utils.Commands
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.intergrate.SpawnMythicMobs
 import me.szu.kurtkong.ui.GuiForStructures.openStructureGUI
 import org.bukkit.Bukkit
-import org.bukkit.Material
-import org.bukkit.command.CommandSender
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
-import taboolib.common.platform.Awake
 import taboolib.common.platform.Plugin
 import taboolib.common.platform.command.command
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
-import taboolib.common.util.sync
 import taboolib.platform.BukkitPlugin
 
 
@@ -32,7 +27,9 @@ object KDungeon : Plugin() {
         regcmd()
         // generateTaskScheduler= GenerateTaskScheduler(10)
         intergrate()
-
+        var loc1=Location(Bukkit.getWorld("test_1"),-288.0,63.0,240.0)
+        var loc2=Location(Bukkit.getWorld("test_1"),-288.0,62.0,219.0)
+     //   debug(loc1.distance(loc2).toString())
     }
     fun intergrate(){
         playerDetectTask.registerProcessor("[mm]",SpawnMythicMobs.processor)
@@ -61,10 +58,24 @@ object KDungeon : Plugin() {
                 dynamic("线程数") {
                     execute<Player>{
                         sender, context, argument ->
-                        argument.toIntOrNull()?.let { generateTaskScheduler=GenerateTaskScheduler(it)
+                        argument.toIntOrNull()?.let {
+                           generateTaskScheduler=GenerateTaskScheduler(it)
+
                         sender.info("启动完成")
                         }
 
+                    }
+                }
+            }
+            literal("check"){
+                execute<Player>{
+                    sender, context, argument ->
+                    StructureData.structures.forEach {
+                        its->
+                        StructureData.structures.forEach {
+                            it->
+                            sender.sendMessage(its.pos1.distance(it.pos1).toString())
+                        }
                     }
                 }
             }
