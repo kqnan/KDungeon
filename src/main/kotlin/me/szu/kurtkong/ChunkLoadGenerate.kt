@@ -128,6 +128,9 @@ object ChunkLoadGenerate {
     @SubscribeEvent
     fun createStructures(e:ChunkPopulateEvent){
         if(ConfigObject.mode.equals("populate",ignoreCase = true)){
+            KDungeon.generateTaskScheduler?.submit {
+                generate(e.chunk)
+            }
         }
     }
 }

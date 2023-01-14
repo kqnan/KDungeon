@@ -29,12 +29,21 @@ object GuiForStructures {
             // 下一页位置以及物品
             setNextPage(53) { page, hasNextPage ->
 
-                return@setNextPage ItemStack(Material.GRASS_BLOCK)
+                return@setNextPage  ItemBuilder(Material.PLAYER_HEAD).also { it.skullTexture=ItemBuilder.SkullTexture(
+                    "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNDA2NzJiODJmMGQxZjhjNDBjNTZiNDJkMzY5YWMyOTk0Yzk0ZGE0NzQ5MTAxMGMyY2U0MzAzZTM0NjViOTJhNyJ9fX0="
+                )
+
+                    it.name="&f下一页".colored()
+                }.build()
             }
             // 上一页位置以及物品
             setPreviousPage(45) { page, hasPreviousPage ->
 
-                return@setPreviousPage ItemStack(Material.STONE)
+                return@setPreviousPage ItemBuilder(Material.PLAYER_HEAD).also {
+                    it.skullTexture=ItemBuilder.SkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTVlZmQ5Njk3NGMwNDAzZjIyOWNmOTQxODVjZGQwZjcxOTczNjJhY2JkMDMxY2RmNTFmY2M4ZGFmYWM2Yjg1YSJ9fX0=")
+
+                    it.name="&f上一页".colored()
+                }.build()
             }
             onClick { event, element ->
                 event.clicker.teleport(element.pos1.clone().add(1.0,1.0,1.0))

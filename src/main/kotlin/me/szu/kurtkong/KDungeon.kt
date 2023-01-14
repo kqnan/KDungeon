@@ -1,11 +1,13 @@
 package me.szu.kurtkong
 
 import com.sk89q.worldedit.bukkit.BukkitWorld
+import io.lumine.mythic.bukkit.utils.Commands
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.intergrate.SpawnMythicMobs
 import me.szu.kurtkong.ui.GuiForStructures.openStructureGUI
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
@@ -53,6 +55,24 @@ object KDungeon : Plugin() {
                         }
 
                    }
+                }
+            }
+            literal("start"){
+                dynamic("线程数") {
+                    execute<Player>{
+                        sender, context, argument ->
+                        argument.toIntOrNull()?.let { generateTaskScheduler=GenerateTaskScheduler(it)
+                        sender.info("启动完成")
+                        }
+
+                    }
+                }
+            }
+            literal("stop"){
+                execute<Player>{
+                    sender, context, argument ->
+                    generateTaskScheduler?.stop()
+                    sender.info("已停止")
                 }
             }
             literal("queue"){
