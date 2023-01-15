@@ -20,6 +20,8 @@ object KDungeon : Plugin() {
     lateinit var plugin:JavaPlugin
     var generateTaskScheduler: GenerateTaskScheduler?=null
     lateinit var playerDetectTask: PlayerDetectTask
+
+    // TODO: 2023/1/14 ²âÊÔÌõ¼þÅÐ¶Ï
     override fun onEnable() {
         plugin=BukkitPlugin.getInstance()
         playerDetectTask= PlayerDetectTask()
@@ -76,7 +78,9 @@ object KDungeon : Plugin() {
                             it->
                             sender.sendMessage(its.pos1.distance(it.pos1).toString())
                         }
+
                     }
+                    sender.sendMessage("tmpSize:"+StructureData.tmp.size.toString()+  "   structuresSize:"+StructureData.structures.size )
                 }
             }
             literal("stop"){

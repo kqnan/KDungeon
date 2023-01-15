@@ -22,12 +22,7 @@ class GenerateTaskScheduler {
         }
 
     }
-    fun setProcessing(loc:Location){
-        tmp.add(loc)
-    }
-    fun releaseProcessing(loc: Location){
-        tmp.remove(loc)
-    }
+
     fun stop(){
         isStop=true
         threads.forEach {
