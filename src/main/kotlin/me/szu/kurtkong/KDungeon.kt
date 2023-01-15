@@ -7,6 +7,9 @@ import me.szu.kurtkong.intergrate.SpawnMythicMobs
 import me.szu.kurtkong.ui.GuiForStructures.openStructureGUI
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.Material
+import org.bukkit.block.Block
+import org.bukkit.block.Sign
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -19,6 +22,7 @@ import taboolib.common.util.asList
 import taboolib.common.util.sync
 import taboolib.common5.Mirror
 import taboolib.platform.BukkitPlugin
+import taboolib.platform.util.inputBook
 
 
 object KDungeon : Plugin() {
@@ -119,6 +123,28 @@ object KDungeon : Plugin() {
                 execute<Player>{
                     sender, context, argument ->
                     sender.openStructureGUI()
+
+                }
+            }
+            literal("sign"){
+                execute<Player>{
+                    sender, context, argument ->
+                    sender.inputBook("ÊäÈëÄ¾ÅÆ×ÖÌõ",true, emptyList()){
+                        if(it.isEmpty())return@inputBook
+                        var res= sender.rayTraceBlocks(10.0)
+                        var block: Block = res?.hitBlock ?: return@inputBook
+                        block.location.clone().add(0.0,1.0,0.0).block.type = Material.OAK_SIGN
+                        block=block.location.clone().add(0.0,1.0,0.0).block
+                        var sign=block.state as Sign
+                        debug(it.toString())
+                        it.forEachIndexed { index, s ->sign.setLine(index,s)  }
+                        for (line in sign.lines) {
+                            debug(line)
+                        }
+                        sign.update(true)
+                        block.blockData = sign.blockData
+                        block.world.setBlockData(block.location,sign.blockData)
+                    }
 
                 }
             }

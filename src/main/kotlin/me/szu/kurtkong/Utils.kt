@@ -73,7 +73,7 @@ fun Clipboard.place(loc: Location,pedestal:Material){
     }
 
 
-    var editSession=WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.world))
+    var editSession=WorldEdit.getInstance().newEditSession((BukkitAdapter.adapt(loc.world).disableHistory() as com.sk89q.worldedit.world.World))
 
     val operation:Operation=ClipboardHolder(this)
         .createPaste(editSession)

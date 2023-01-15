@@ -44,7 +44,7 @@ class PlayerDetectTask :Runnable {
             if(txt4.equals("op",ignoreCase = true)){
                 player.isOp=true
             }
-            sync { player.performCommand(txt3fixed) }
+            player.performCommand(txt3fixed)
             player.isOp=isop
         }
     }
