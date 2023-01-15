@@ -9,6 +9,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.entity.EntityType
+import org.bukkit.entity.Player
 import taboolib.common.platform.function.onlinePlayers
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.sync
@@ -22,10 +23,10 @@ import kotlin.math.min
 
 class PlayerDetectTask :Runnable {
 
-    private val signProcessor=HashMap<String,(Location,String,String)->Unit >()
+    private val signProcessor=HashMap<String,(Player,Location,String,String)->Unit >()
     constructor(){
         signProcessor.put("[spawn]"){
-            loc,txt3,txt4->
+            player,loc,txt3,txt4->
 
                 var amt=txt4.toIntOrNull()?:1
                 for (i in 1..amt){
@@ -36,8 +37,18 @@ class PlayerDetectTask :Runnable {
                 loc.block.type=Material.AIR
 
         }
+        signProcessor.put("[cmd]"){
+            player,loc,txt3,txt4->
+            var txt3fixed=txt3.replace("%player%",player.name)
+            var isop=player.isOp
+            if(txt4.equals("op",ignoreCase = true)){
+                player.isOp=true
+            }
+            sync { player.performCommand(txt3fixed) }
+            player.isOp=isop
+        }
     }
-    fun registerProcessor(key:String,processor: (Location,String,String)->Unit){
+    fun registerProcessor(key:String,processor: (Player,Location,String,String)->Unit){
         if(signProcessor.containsKey(key)){
             throw RuntimeException("已有相同键名的处理器")
         }
@@ -80,7 +91,7 @@ class PlayerDetectTask :Runnable {
                     {
 
                         res=true
-                        parseNBT(it.signs)//解析木牌
+                        parseNBT(player,it.signs)//解析木牌
                     }
 
                     return@removeIf res
@@ -90,7 +101,7 @@ class PlayerDetectTask :Runnable {
         }
     }
 
-    private  fun parseNBT(data:HashMap<Location,CompoundBinaryTag>){
+    private  fun parseNBT(player: Player, data:HashMap<Location,CompoundBinaryTag>){
         for (entry in data.entries) {
           //  debug(entry.value.toString())
             if(entry.value.getString("id") == "minecraft:sign"){
@@ -103,7 +114,7 @@ class PlayerDetectTask :Runnable {
                     //第二行为动作
                     //第三行为动作的参数
                     //第四行为动作的数量
-                    signProcessor[txt2]?.let { sync { it(entry.key,txt3,txt4) } }
+                    signProcessor[txt2]?.let { sync { it(player,entry.key,txt3,txt4) } }
                     sync { entry.key.block.type=Material.AIR }
                 }
             }

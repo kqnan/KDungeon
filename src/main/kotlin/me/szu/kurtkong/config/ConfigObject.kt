@@ -18,7 +18,7 @@ import taboolib.platform.util.onlinePlayers
 import java.io.File
 
 object ConfigObject {
-    @Config
+    @Config(autoReload = true)
     lateinit var config:Configuration
     @ConfigNode(value="mode")
     lateinit var mode:String
@@ -26,27 +26,31 @@ object ConfigObject {
     lateinit var debug:java.lang.Boolean
     @ConfigNode(value = "hide")
     lateinit var hide:java.lang.Double
+    @ConfigNode(value="dynamic.points")
+    lateinit var points:java.lang.Integer
+    @ConfigNode(value="dynamic.interval")
+    lateinit var interval:java.lang.Integer
     private val  path="plugins/KDungeon/config.yml"
     init {
-        FileWatcher.INSTANCE.addSimpleListener(File(path), Runnable {
-            config= Configuration.loadFromFile(File(path))
-            mode= config.getString("load","populate")!!
-            debug= config.getString("debug","false")!!.toBoolean() as java.lang.Boolean
-            hide= config.getString("hide","30")!!.toDouble() as java.lang.Double
+        FileWatcher.INSTANCE.addSimpleListener(File(path)) {
+            config = Configuration.loadFromFile(File(path))
+            debug(mode)
             for (key in config.getConfigurationSection("Structures")!!.getKeys(false)) {
-                var schema= config.getString("Structures.${key}.schema")
-                if(!File(schema).exists()){
-                    onlinePlayers.forEach { if(it.isOp){
-                        it.warn("路径: $schema 无效")
-                    }
+                var schema = config.getString("Structures.${key}.schema")
+                if (!File(schema).exists()) {
+                    onlinePlayers.forEach {
+                        if (it.isOp) {
+                            it.warn("路径: $schema 无效")
+                        }
                     }
                 }
             }
-            onlinePlayers.forEach { if(it.isOp){
-                it.info("自动重载完成")
+            onlinePlayers.forEach {
+                if (it.isOp) {
+                    it.info("自动重载完成")
+                }
             }
-            }
-        })
+        }
     }
     fun getIcon(key:String):ItemStack{
         return config.getItemStack("Structures.${key}.icon")?: ItemStack(Material.PAPER)
@@ -80,7 +84,8 @@ object ConfigObject {
         return config.getStringList("Structures.${key}.bottom_material")
     }
     fun isChance(key: String):Boolean{
-        return random(0, 100)<=config.getInt("Structures.${key}.chance")
+
+        return random(1, 100)<=config.getInt("Structures.${key}.chance")
     }
     fun getWorlds(key:String):ArrayList<World>{
        var w= config.getStringList("Structures.${key}.world")

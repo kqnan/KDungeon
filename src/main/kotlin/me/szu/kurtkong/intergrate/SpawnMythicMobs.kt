@@ -5,9 +5,10 @@ import io.lumine.mythic.api.MythicProvider
 import io.lumine.mythic.api.adapters.AbstractLocation
 import io.lumine.mythic.bukkit.adapters.BukkitLocation
 import org.bukkit.Location
+import org.bukkit.entity.Player
 
 object SpawnMythicMobs {
-    val processor={loc:Location,txt3:String,txt4:String->
+    val processor={ player: Player, loc:Location, txt3:String, txt4:String->
         var amt=txt4.toIntOrNull()?:1
         for(i in 1..amt){
             spawn(loc,txt3)

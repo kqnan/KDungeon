@@ -1,24 +1,27 @@
-package me.szu.kurtkong
+package me.szu.kurtkong.Generate
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.extent.clipboard.Clipboard
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats
-import com.sk89q.worldedit.world.chunk.Chunk
+import me.szu.kurtkong.KDungeon
+import me.szu.kurtkong.StructureData
 import me.szu.kurtkong.config.ConfigObject
-import org.bukkit.Bukkit
+import me.szu.kurtkong.debug
+import me.szu.kurtkong.place
 import org.bukkit.Location
 import org.bukkit.Material
-import org.bukkit.event.world.ChunkLoadEvent
 import org.bukkit.event.world.ChunkPopulateEvent
 
 import taboolib.common.platform.event.SubscribeEvent
-import taboolib.common.platform.function.submitAsync
-import taboolib.common5.cbool
+import taboolib.common5.mirrorNow
 import java.io.File
 import java.io.FileInputStream
 
 // TODO: 2023/1/14  开服第一次开启调度器，任务会很爆满。但是当关了再开，就不会卡了。
 // TODO: 2023/1/14 调度器启动时系统会非常卡
+// TODO: 2023/1/15 有一个堆积现象，队列中的元素会一直增加，处理速度非常慢
+// TODO: 2023/1/15 在test 100 其他chance为0 时，如果不及时continue最外层循环，会出现堆积的现象 。因此绝对不是计算量太大的问题
+
 
 object ChunkLoadGenerate {
     fun placeStructure(key:String,loc:Location,schem:String,pedestal:Material){
@@ -27,7 +30,7 @@ object ChunkLoadGenerate {
         if(!file.exists())return
         val format = ClipboardFormats.findByFile(file)
         format!!.getReader(FileInputStream(file)).use { reader -> clipboard = reader.read() }
-        if(!StructureData.addStructure(key,clipboard,loc)) {
+        if(!StructureData.addStructure(key, clipboard, loc)) {
             clipboard.close()
             return
         }
@@ -36,10 +39,9 @@ object ChunkLoadGenerate {
     }
 
     fun shouldGenerate(key:String,loc:Location):Boolean{
-
+        //debug(ConfigObject.isChance(key).toString())
         if(!ConfigObject.isChance(key)){
-            //  debug("not chance")
-
+              //debug("not chance")
             return false
         }
         var bottomlist=ConfigObject.getBottom_material(key)
@@ -98,48 +100,61 @@ object ChunkLoadGenerate {
         return true
 
     }
-    fun generate(chunk:org.bukkit.Chunk){
-        var x = chunk.x.shl(4)
-        var z = chunk.z.shl(4)
-        var world=BukkitAdapter.adapt(chunk.world)
-        var maxY = world.maxY
-        var minY = world.minY
-        var keys=ConfigObject.config.getConfigurationSection("Structures")!!.getKeys(false)
-        for (key in keys) {
-            out@for (k in minY .. maxY) {
+    private fun generate(chunk:org.bukkit.Chunk){
+        mirrorNow("generate"){
+            val x = chunk.x.shl(4)
+            val z = chunk.z.shl(4)
+            val world=BukkitAdapter.adapt(chunk.world)
+            val maxY = world.maxY
+            val minY = world.minY
+            val keys=ConfigObject.config.getConfigurationSection("Structures")!!.getKeys(false)
+            key@for (key in keys) {
+                if(ConfigObject.config.getInt("Structures.${key}.chance")<=0)continue
 
-                for (i in 0..15) {
-                    for (j in 0..15) {
 
-                        var loc = Location(chunk.world, (x + i).toDouble(), k.toDouble(), (z + j).toDouble())
-                        if(!ConfigObject.isHeight(key,loc)){
-                            continue@out  //如果高度不对则立刻跳出
-                        }
+                out@for (k in minY .. maxY) {
 
-                        if (shouldGenerate(key, loc)) {
-                            placeStructure(
-                                key,
-                                loc,
-                                ConfigObject.getScheme(key),
-                                ConfigObject.getPedestal_Material(key)
-                            )
+                    for (i in 0..15) {
+                        for (j in 0..15) {
+
+                            var loc = Location(chunk.world, (x + i).toDouble(), k.toDouble(), (z + j).toDouble())
+                            if(!ConfigObject.isHeight(key,loc)){
+                                continue@out  //如果高度不对则立刻跳出
+                            }
+                            if(!ConfigObject.getWorlds(key).contains(loc.world)){
+                                //  debug("world not include")
+                                continue@key
+                            }
+                            var limit=ConfigObject.getAmountLimit(key)
+                            var cnt=0
+                            StructureData.structures.forEach { if(it.key==key)cnt++ }
+                            if(cnt>=limit&&limit!=-1) {
+                                //  debug("not limit")
+
+                                continue@key
+                            }
+
+                                if (shouldGenerate(key, loc)) {
+                                    placeStructure(
+                                        key,
+                                        loc,
+                                        ConfigObject.getScheme(key),
+                                        ConfigObject.getPedestal_Material(key)
+                                    )
+
+                                }
 
                         }
                     }
+
                 }
-
             }
+
         }
+
     }
 
-    @SubscribeEvent
-    fun createStructures(e:ChunkLoadEvent) {
-        if (ConfigObject.mode.equals("load", ignoreCase = true)) {
-            KDungeon.generateTaskScheduler?.submit {
-                generate(e.chunk)
-            }
-        }
-    }
+
     @SubscribeEvent
     fun createStructures(e:ChunkPopulateEvent){
         if(ConfigObject.mode.equals("populate",ignoreCase = true)){

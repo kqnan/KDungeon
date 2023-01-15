@@ -1,9 +1,12 @@
-package me.szu.kurtkong
+package me.szu.kurtkong.Generate
 
+import me.szu.kurtkong.KDungeon
+import me.szu.kurtkong.debug
 import me.szu.kurtkong.lambdaFunc.Function
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.scheduler.BukkitTask
+import taboolib.common5.mirrorNow
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -11,12 +14,12 @@ class GenerateTaskScheduler {
 
     private val threads=CopyOnWriteArrayList<Task>()
     private val bukkitTasks=ArrayList<BukkitTask>()
-    private var isStop=false
+     var isStop=false
     private val tmp=CopyOnWriteArrayList<Location>()
     constructor(thread: Int){
 
         for (i in 1 .. thread){
-            var t=Task()
+            var t= Task()
             bukkitTasks.add(Bukkit.getScheduler().runTaskAsynchronously(KDungeon.plugin,t))
             threads.add(t)
         }
@@ -46,6 +49,7 @@ class GenerateTaskScheduler {
     }
     fun submit( task: Function){
         if(isStop)return
+
         var idx=0
         var minn=Int.MAX_VALUE
         threads.forEachIndexed { index, Task ->
@@ -64,10 +68,12 @@ class GenerateTaskScheduler {
             while (!isStop){
                 if(queue.isNotEmpty()){
                     var f=queue.poll()
-                    try {
-                        f.apply()
-                    }catch (e:Exception){
-                        e.printStackTrace()
+                    mirrorNow("apply"){
+                        try {
+                            f.apply()
+                        }catch (e:Exception){
+                            e.printStackTrace()
+                        }
                     }
                 }
             }

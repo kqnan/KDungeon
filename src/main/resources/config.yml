@@ -1,6 +1,12 @@
 debug: true
-mode: load  #可填 load 或populate 。表示在区块加载时还是创建时尝试生成遗迹
+mode: dynamic  #可填 load 或populate 。表示在区块加载时还是创建时尝试生成遗迹
 hide: 30  #每多少tick发包隐藏木牌
+dynamic:
+  #每次生成多少个点
+  points: 16
+  #时间间隔，ticks
+  interval: 200
+
 Structures:
   test:
     icon:

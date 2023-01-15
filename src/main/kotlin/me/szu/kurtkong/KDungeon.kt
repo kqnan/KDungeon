@@ -1,17 +1,23 @@
 package me.szu.kurtkong
 
+import me.szu.kurtkong.Generate.ChunkLoadGenerate
+import me.szu.kurtkong.Generate.GenerateTaskScheduler
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.intergrate.SpawnMythicMobs
 import me.szu.kurtkong.ui.GuiForStructures.openStructureGUI
 import org.bukkit.Bukkit
 import org.bukkit.Location
+import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
 import taboolib.common.platform.Plugin
+import taboolib.common.platform.ProxyCommandSender
 import taboolib.common.platform.command.command
 import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
+import taboolib.common.util.sync
+import taboolib.common5.Mirror
 import taboolib.platform.BukkitPlugin
 
 
@@ -22,6 +28,8 @@ object KDungeon : Plugin() {
     lateinit var playerDetectTask: PlayerDetectTask
 
     // TODO: 2023/1/14 测试条件判断
+    // TODO: 2023/1/15 fawe的接口会产生历史文件 需要去掉
+
     override fun onEnable() {
         plugin=BukkitPlugin.getInstance()
         playerDetectTask= PlayerDetectTask()
@@ -29,9 +37,8 @@ object KDungeon : Plugin() {
         regcmd()
         // generateTaskScheduler= GenerateTaskScheduler(10)
         intergrate()
-        var loc1=Location(Bukkit.getWorld("test_1"),-288.0,63.0,240.0)
-        var loc2=Location(Bukkit.getWorld("test_1"),-288.0,62.0,219.0)
-     //   debug(loc1.distance(loc2).toString())
+
+
     }
     fun intergrate(){
         playerDetectTask.registerProcessor("[mm]",SpawnMythicMobs.processor)
@@ -56,17 +63,26 @@ object KDungeon : Plugin() {
                    }
                 }
             }
+
             literal("start"){
                 dynamic("线程数") {
                     execute<Player>{
                         sender, context, argument ->
                         argument.toIntOrNull()?.let {
-                           generateTaskScheduler=GenerateTaskScheduler(it)
-
+                            if(generateTaskScheduler!=null && !generateTaskScheduler!!.isStop)return@execute
+                           generateTaskScheduler= GenerateTaskScheduler(it)
                         sender.info("启动完成")
                         }
 
                     }
+                }
+            }
+            literal("mirror"){
+                execute<ProxyCommandSender>(){
+                    sender, context, argument ->
+
+                    Mirror.report(sender)
+
                 }
             }
             literal("check"){
@@ -76,7 +92,9 @@ object KDungeon : Plugin() {
                         its->
                         StructureData.structures.forEach {
                             it->
-                            sender.sendMessage(its.pos1.distance(it.pos1).toString())
+                            if(its.originLocation.distance(it.originLocation)>0 &&its.originLocation.distance(it.originLocation)  <ConfigObject.getDistBet(it.key) && its.key==it.key){
+                                debug("$its  \n $it")
+                            }
                         }
 
                     }

@@ -74,6 +74,7 @@ fun Clipboard.place(loc: Location,pedestal:Material){
 
 
     var editSession=WorldEdit.getInstance().newEditSession(BukkitAdapter.adapt(loc.world))
+
     val operation:Operation=ClipboardHolder(this)
         .createPaste(editSession)
         .to(BlockVector3.at(loc.x,loc.y,loc.z))
