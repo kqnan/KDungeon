@@ -5,6 +5,7 @@ import me.szu.kurtkong.Generate.GenerateTaskScheduler
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.intergrate.SpawnMythicMobs
 import me.szu.kurtkong.ui.GuiForStructures.openStructureGUI
+import me.szu.kurtkong.ui.GuiMain.openMainGui
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
@@ -122,7 +123,7 @@ object KDungeon : Plugin() {
             literal("menu"){
                 execute<Player>{
                     sender, context, argument ->
-                    sender.openStructureGUI()
+                    sender.openMainGui()//.openStructureGUI(StructureData.structures)
 
                 }
             }

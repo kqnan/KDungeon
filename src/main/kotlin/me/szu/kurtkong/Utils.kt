@@ -56,6 +56,7 @@ fun Location.containWithin(loc1:Location,loc2:Location):Boolean{
 fun BlockVector3.toBukkit(world: World):Location{
     return BukkitAdapter.adapt(world,this)
 }
+
 fun Clipboard.place(loc: Location,pedestal:Material){
     this.region.iterator().forEach {
         if(this.getFullBlock(it).blockType==BukkitAdapter.asBlockType(Material.BEDROCK)){//原理图的这个位置是基岩

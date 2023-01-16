@@ -8,6 +8,7 @@ import org.bukkit.*
 import org.bukkit.block.Biome
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.info
+import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.random
 import taboolib.common5.FileWatcher
 import taboolib.library.xseries.getItemStack
@@ -30,7 +31,12 @@ object ConfigObject {
     lateinit var points:java.lang.Integer
     @ConfigNode(value="dynamic.interval")
     lateinit var interval:java.lang.Integer
-    private val  path="plugins/KDungeon/config.yml"
+    private const val  path="plugins/KDungeon/config.yml"
+    fun save(){
+        submitAsync {
+            config.saveToFile(File(path))
+        }
+    }
     init {
         FileWatcher.INSTANCE.addSimpleListener(File(path)) {
             config = Configuration.loadFromFile(File(path))

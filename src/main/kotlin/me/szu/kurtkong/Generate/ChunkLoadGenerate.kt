@@ -17,10 +17,7 @@ import taboolib.common5.mirrorNow
 import java.io.File
 import java.io.FileInputStream
 
-// TODO: 2023/1/14  开服第一次开启调度器，任务会很爆满。但是当关了再开，就不会卡了。
-// TODO: 2023/1/14 调度器启动时系统会非常卡
-// TODO: 2023/1/15 有一个堆积现象，队列中的元素会一直增加，处理速度非常慢
-// TODO: 2023/1/15 在test 100 其他chance为0 时，如果不及时continue最外层循环，会出现堆积的现象 。因此绝对不是计算量太大的问题
+
 
 
 object ChunkLoadGenerate {

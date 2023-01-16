@@ -2,6 +2,7 @@ package me.szu.kurtkong.ui
 
 import me.szu.kurtkong.StructureData
 import me.szu.kurtkong.config.ConfigObject
+import me.szu.kurtkong.ui.GuiMain.openMainGui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -12,18 +13,13 @@ import taboolib.module.ui.type.Linked
 import taboolib.platform.util.ItemBuilder
 
 object GuiForStructures {
-    fun Player.openStructureGUI(){
+    fun Player.openStructureGUI(structures :List<StructureData.Structure>){
 
         this.openMenu<Linked<StructureData.Structure>>("已生成的遗迹"){
 
-            // 界面应该显示几行
             rows(6)
-            // 可放置物品位置，这个地方应该提供一个MutableList<Int>的列表
-            //slots(mutableListOf().toList())
-            // 显示在界面上的所有元素集合
-            // 显示的物品，你可能传入的是一个实体类，但是至少应该有可以表示ItemStack的一个属性
             elements {
-                return@elements StructureData.structures
+                return@elements structures
             }
             slots(generateSequence(0) { if(it+1<45)it+1 else null }.toList())
             // 下一页位置以及物品
@@ -35,6 +31,12 @@ object GuiForStructures {
 
                     it.name="&f下一页".colored()
                 }.build()
+            }
+            set(49,ItemBuilder(Material.PLAYER_HEAD).also {
+                it.skullTexture= ItemBuilder.SkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWI5M2VkYmE0MmM3YmJmYTk0YjEyZjg5YmQ1NWQ5NTg2MjI1OWNkYjYyOTNjODNiOTBiOTMxYWU0ZDEzOTA4OCJ9fX0=")
+                it.name="&f返回".colored()
+            }.build()){
+                this.clicker.openMainGui()
             }
             // 上一页位置以及物品
             setPreviousPage(45) { page, hasPreviousPage ->
@@ -48,11 +50,12 @@ object GuiForStructures {
             onClick { event, element ->
                 event.clicker.teleport(element.pos1.clone().add(1.0,1.0,1.0))
             }
-            onGenerate { _, element, _, _ ->
+            onGenerate (async = true){ _, element, _, _ ->
                 return@onGenerate ItemBuilder(ConfigObject.getIcon(element.key)).also { its ->
                     its.lore.forEach { it.colored() }
                     its.lore.add("&f第一角点: ${element.pos1.x} , ${element.pos1.y} , ${element.pos1.z}".colored())
                     its.lore.add("&f第二角点: ${element.pos2.x} , ${element.pos2.y} , ${element.pos2.z}".colored())
+                    its.lore.add("&f世界：${element.pos1.world?.name}".colored())
                     its.lore.add("&a点击传送到遗迹附近".colored())
                 }.build()
             }
