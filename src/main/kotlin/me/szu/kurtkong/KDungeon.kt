@@ -1,5 +1,8 @@
 package me.szu.kurtkong
 
+import com.sk89q.worldedit.util.formatting.text.TextComponent
+import com.sk89q.worldedit.util.formatting.text.serializer.ComponentSerializer
+import com.sk89q.worldedit.util.formatting.text.serializer.gson.GsonComponentSerializer
 import me.szu.kurtkong.Generate.ChunkLoadGenerate
 import me.szu.kurtkong.Generate.GenerateTaskScheduler
 import me.szu.kurtkong.config.ConfigObject
@@ -22,6 +25,7 @@ import taboolib.common.platform.function.submitAsync
 import taboolib.common.util.asList
 import taboolib.common.util.sync
 import taboolib.common5.Mirror
+import taboolib.module.chat.uncolored
 import taboolib.platform.BukkitPlugin
 import taboolib.platform.util.inputBook
 
@@ -34,6 +38,7 @@ object KDungeon : Plugin() {
 
     // TODO: 2023/1/14 测试条件判断
     // TODO: 2023/1/15 fawe的接口会产生历史文件 需要去掉
+    // TODO: 2023/1/16 还是没有解决历史文件的问题
 
     override fun onEnable() {
         plugin=BukkitPlugin.getInstance()
@@ -137,10 +142,10 @@ object KDungeon : Plugin() {
                         block.location.clone().add(0.0,1.0,0.0).block.type = Material.OAK_SIGN
                         block=block.location.clone().add(0.0,1.0,0.0).block
                         var sign=block.state as Sign
-                        debug(it.toString())
-                        it.forEachIndexed { index, s ->sign.setLine(index,s)  }
+                        //debug(it.toString())
+                        it.forEachIndexed { index, s ->sign.setLine(index,s.uncolored())  }
                         for (line in sign.lines) {
-                            debug(line)
+                         //   debug(line)
                         }
                         sign.update(true)
                         block.blockData = sign.blockData

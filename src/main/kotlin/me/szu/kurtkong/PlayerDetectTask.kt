@@ -35,11 +35,10 @@ class PlayerDetectTask :Runnable {
                     }catch (e:Exception){break})
                 }
                 loc.block.type=Material.AIR
-
         }
         signProcessor.put("[cmd]"){
             player,loc,txt3,txt4->
-            var txt3fixed=txt3.replace("%player%",player.name)
+            var txt3fixed=txt3.replace("%p%",player.name).replace("#","&")
             var isop=player.isOp
             if(txt4.equals("op",ignoreCase = true)){
                 player.isOp=true
