@@ -78,7 +78,7 @@ object ChunkLoadGenerate {
             var p1=structure.pos1
             var p2=structure.pos2
             var p3=structure.originLocation//Location(p1.world,(p1.x+p2.x)/2.0,(p1.y+p2.y)/2.0,(p1.z+p2.z)/2.0)
-            if(loc.world!!.name==p3.world!!.name&&loc.distance(p3)<disbet&&key==structure.key){
+            if(loc.world!!.name==p3.world!!.name&&loc.distance(p3)<disbet){
 
                 return false
             }

@@ -52,7 +52,7 @@ object StructureData {
      synchronized(lock){
          for (structure in StructureData.structures) {
              var p3=structure.originLocation//Location(p1.world,(p1.x+p2.x)/2.0,(p1.y+p2.y)/2.0,(p1.z+p2.z)/2.0)
-             if(location.world!!.name==p3.world!!.name&&location.distance(p3)<disbet&&key==structure.key){
+             if(location.world!!.name==p3.world!!.name&&location.distance(p3)<disbet){
                  return false
              }
          }
