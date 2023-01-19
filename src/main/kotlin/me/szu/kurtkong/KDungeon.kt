@@ -28,6 +28,7 @@ import taboolib.common5.Mirror
 import taboolib.module.chat.uncolored
 import taboolib.platform.BukkitPlugin
 import taboolib.platform.util.inputBook
+import kotlin.math.max
 
 
 object KDungeon : Plugin() {
@@ -102,7 +103,7 @@ object KDungeon : Plugin() {
                         its->
                         StructureData.structures.forEach {
                             it->
-                            if(its.originLocation.distance(it.originLocation)>0 &&its.originLocation.distance(it.originLocation)  <ConfigObject.getDistBet(it.key) && its.key==it.key){
+                            if(its.originLocation.distance(it.originLocation)>0 &&its.originLocation.distance(it.originLocation)  <max(ConfigObject.getDistBet(it.key),ConfigObject.getDistBet(its.key))){
                                 debug("$its  \n $it")
                             }
                         }

@@ -13,6 +13,7 @@ import taboolib.module.ui.type.Basic
 import taboolib.platform.util.ItemBuilder
 import taboolib.platform.util.inputBook
 
+// TODO: 2023/1/19 菜单的输入需要有一个纠错机制
 object GuiSettings {
     fun Player.openSettings(key:String){
         this.openMenu<Basic>("遗迹${key}的设定"){
