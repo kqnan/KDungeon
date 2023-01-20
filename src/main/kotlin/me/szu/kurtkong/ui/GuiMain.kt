@@ -2,6 +2,7 @@ package me.szu.kurtkong.ui
 
 import me.szu.kurtkong.StructureData
 import me.szu.kurtkong.config.ConfigObject
+import me.szu.kurtkong.ui.GuiForItems.openItemsGUI
 import me.szu.kurtkong.ui.GuiForStructures.openStructureGUI
 import me.szu.kurtkong.ui.GuiSettings.openSettings
 import org.bukkit.Material
@@ -46,6 +47,12 @@ object GuiMain {
 
                     it.name="&f上一页".colored()
                 }.build()
+            }
+            set(50,ItemBuilder(Material.PLAYER_HEAD).also {
+                it.skullTexture=ItemBuilder.SkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGU0NDk1ZjliOTJkODlmNTUzNDI4YmNhMzU0Y2VkYjlmYWM1YjgxOWM5NDIxNDgzZWU0OGNiZTg3YTk2OTNkOSJ9fX0=")
+                it.name="&f物品库".colored()
+            }.build()){
+                this.clicker.openItemsGUI()
             }
             onClick { event, element ->
                 if(event.clickEvent().click==ClickType.LEFT){

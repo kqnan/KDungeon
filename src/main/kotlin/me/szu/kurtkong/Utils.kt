@@ -7,26 +7,22 @@ import com.comphenix.protocol.wrappers.BlockPosition
 import com.comphenix.protocol.wrappers.WrappedBlockData
 import com.sk89q.worldedit.WorldEdit
 import com.sk89q.worldedit.bukkit.BukkitAdapter
-import com.sk89q.worldedit.bukkit.BukkitBlockRegistry.BukkitBlockMaterial
 import com.sk89q.worldedit.extent.clipboard.Clipboard
 import com.sk89q.worldedit.function.operation.Operation
 import com.sk89q.worldedit.function.operation.Operations
 import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.session.ClipboardHolder
-import com.sk89q.worldedit.world.block.BaseBlock
-import com.sk89q.worldedit.world.block.BlockState
-import com.sk89q.worldedit.world.block.BlockType
-import com.sk89q.worldedit.world.registry.BlockMaterial
 import me.szu.kurtkong.config.ConfigObject
+import net.sourceforge.pinyin4j.PinyinHelper
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
 import taboolib.common.platform.function.info
-import taboolib.common.platform.function.onlinePlayers
 import taboolib.module.chat.colored
 import kotlin.math.max
 import kotlin.math.min
+
 fun debug( str:String){
     if(ConfigObject.debug.booleanValue()){
         info(str)
@@ -41,6 +37,19 @@ fun Player.info(str:String){
 }
 fun Player.warn(str:String){
     this.sendMessage("&6[KDungeon]$str".colored())
+}
+fun String.toPinYin():String{
+    val sb = StringBuilder()
+    for (i in 0 until this.length) {
+        val ch: Char = this.get(i)
+        val s = PinyinHelper.toHanyuPinyinStringArray(ch)
+        if (s != null) {
+            sb.append(s[0][0])
+        } else {
+            sb.append(ch)
+        }
+    }
+    return sb.toString()
 }
 fun Location.containWithin(loc1:Location,loc2:Location):Boolean{
     if(this.world!!.name!=loc1.world!!.name)return false

@@ -28,6 +28,7 @@ import taboolib.common5.Mirror
 import taboolib.module.chat.uncolored
 import taboolib.platform.BukkitPlugin
 import taboolib.platform.util.inputBook
+import taboolib.platform.util.isAir
 import kotlin.math.max
 
 
@@ -48,6 +49,7 @@ object KDungeon : Plugin() {
         regcmd()
         // generateTaskScheduler= GenerateTaskScheduler(10)
         intergrate()
+
 
 
     }
@@ -133,6 +135,7 @@ object KDungeon : Plugin() {
 
                 }
             }
+
             literal("sign"){
                 execute<Player>{
                     sender, context, argument ->
