@@ -3,6 +3,7 @@ package me.szu.kurtkong.ui
 import me.szu.kurtkong.StructureData
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.config.ItemsObject
+import me.szu.kurtkong.debug
 import me.szu.kurtkong.info
 import me.szu.kurtkong.ui.GuiForItemAdding.openItemsAdding
 import me.szu.kurtkong.ui.GuiMain.openMainGui
@@ -49,6 +50,7 @@ object GuiForItems {
                 this.clicker.openMainGui()
             }
             set(50,ItemBuilder(Material.PLAYER_HEAD).also {
+                it.name="&f添加物品".colored()
                 it.skullTexture=ItemBuilder.SkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzEzNzRhMDY2MWNlNzczMTE5Yjg3YWM3ZDhmNDZlOTA5NTgyZTYwZTY1MjEzNGQzNmRlMTQ0YjQ3YzNjYTEwNyJ9fX0=")
             }.build()){
                 this.clicker.openItemsAdding()
@@ -86,9 +88,11 @@ object GuiForItems {
                     }
                 }
             }
+
             onGenerate (async = true){ _, element, _, _ ->
+
                 return@onGenerate ItemBuilder(element.second).also { its ->
-                        its.name?.let { its.name="&c&l键值：${element.first}".colored()+its.name }
+                        its.lore.add("&c&l键值：${element.first}".colored() )
                         its.lore.add("&a&l左键点击修改键名".colored())
                         its.lore.add("&c&l右键点击删除".colored())
                 }.build()

@@ -43,15 +43,13 @@ object StructureData {
             }
         }
         var structure=Structure(key,minp.toBukkit(location.world!!),maxp.toBukkit(location.world!!),signs,location)
-        //debug(structure.toString())
+
 
       var disbet= ConfigObject.getDistBet(key)
-    //  var minb=minp.toBukkit(location.world!!)
-     // var maxb=maxp.toBukkit(location.world!!)
-        //var mid=location.clone()//Location(minb.world,(minb.x+maxb.x)/2.0,(minb.y+maxb.y)/2.0,(minb.z+maxb.z)/2.0)
+
      synchronized(lock){
          for (structure in StructureData.structures) {
-             var p3=structure.originLocation//Location(p1.world,(p1.x+p2.x)/2.0,(p1.y+p2.y)/2.0,(p1.z+p2.z)/2.0)
+             var p3=structure.originLocation
              if(location.world!!.name==p3.world!!.name&&location.distance(p3)<disbet){
                  return false
              }
