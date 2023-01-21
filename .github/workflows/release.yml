@@ -2,6 +2,7 @@ name: Project Release
 on:
   release:
     types: [ published ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
