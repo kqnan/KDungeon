@@ -18,6 +18,6 @@ object SpawnMythicMobs {
         var moboption=MythicProvider.get().mobManager.getMythicMob(id)
         var mob=if(moboption.isPresent)moboption.get() else return
 
-        mob.spawn(AbstractLocation(loc.world!!.name,loc.x,loc.y,loc.z) ,1.0)  
+        mob.spawn(AbstractLocation(loc.world!!.name,loc.x,loc.y,loc.z) ,1.0)
     }
 }
