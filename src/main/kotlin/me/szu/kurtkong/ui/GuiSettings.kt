@@ -2,6 +2,7 @@ package me.szu.kurtkong.ui
 
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.ui.GuiMain.openMainGui
+import me.szu.kurtkong.ui.GuiSetLoot.openSetLootGui
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
@@ -17,7 +18,7 @@ import taboolib.platform.util.inputBook
 object GuiSettings {
     fun Player.openSettings(key:String){
         this.openMenu<Basic>("遗迹${key}的设定"){
-            rows(2)
+            rows(3)
             set(0,ItemBuilder(Material.PLAYER_HEAD).also {
             it.skullTexture= ItemBuilder.SkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWRiYTgxYjNmYzNhZDNjNTA4NzQ1ZGY2MTAwN2I0ZTRhMDJhZWVjODZlMmNiMWM2NWUzNjc2ODExY2NmMDdmZiJ9fX0=")
                 it.name="&f生成概率".colored()
@@ -215,7 +216,14 @@ object GuiSettings {
                 }
 
             }
-            set(13,ItemBuilder(Material.PLAYER_HEAD).also {
+            set(9,ItemBuilder(Material.CHEST).also {
+                it.name="&f设置战利品".colored()
+                it.lore.add("&a左键点击进入交互界面".colored())
+            }.build()){
+                this.clicker.openSetLootGui(key)
+            }
+
+            set(22,ItemBuilder(Material.PLAYER_HEAD).also {
                 it.skullTexture= ItemBuilder.SkullTexture("eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYWI5M2VkYmE0MmM3YmJmYTk0YjEyZjg5YmQ1NWQ5NTg2MjI1OWNkYjYyOTNjODNiOTBiOTMxYWU0ZDEzOTA4OCJ9fX0=")
                 it.name="&f返回".colored()
             }.build()){

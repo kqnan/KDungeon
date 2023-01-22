@@ -14,6 +14,7 @@ import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
 import org.bukkit.block.Sign
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -50,8 +51,6 @@ object KDungeon : Plugin() {
         // generateTaskScheduler= GenerateTaskScheduler(10)
         intergrate()
 
-
-
     }
     fun intergrate(){
         playerDetectTask.registerProcessor("[mm]",SpawnMythicMobs.processor)
@@ -76,7 +75,13 @@ object KDungeon : Plugin() {
                    }
                 }
             }
+            literal("loop"){
+                execute<CommandSender>{
+                    sender, context, argument ->
+                    Bukkit.getScheduler().runTaskAsynchronously(KDungeon.plugin, Runnable { while (true){} })
 
+                }
+            }
             literal("start"){
                 dynamic("Ïß³ÌÊý") {
                     execute<Player>{
