@@ -19,6 +19,7 @@ import taboolib.common.util.asList
 import taboolib.library.xseries.getItemStack
 import taboolib.library.xseries.setItemStack
 import taboolib.module.chat.colored
+import taboolib.module.configuration.util.getMap
 import taboolib.module.nms.inputSign
 import taboolib.module.ui.openMenu
 import taboolib.module.ui.type.Basic
@@ -28,7 +29,7 @@ import taboolib.platform.util.isNotAir
 
 object GuiSetLoot {
     fun Player.openSetLootGui(structure_key:String){
-        var loot=ConfigObject.config.getStringList("Structures.${structure_key}.loot").toMutableList()
+        var loot=ConfigObject.config.getMap<String,Int>("Structures.${structure_key}.loot").toMutableMap()
         this.openMenu<Linked<Pair<String, ItemStack>>>("物品库"){
             rows(6)
             elements {
@@ -66,10 +67,15 @@ object GuiSetLoot {
             }
             onClick { event, element ->
                 if(event.clickEvent().click== ClickType.LEFT){
-                    if(!loot.contains(element.first)){
-                        loot.add(element.first)
-                        event.inventory.setItem(event.rawSlot,ItemBuilder(event.currentItem?:return@onClick).also { it.shiny() }.build())
-                    }
+                        //设置概率
+                        event.clicker.inputSign {
+                            it[0].toIntOrNull()?.let { its->
+                                loot.put(element.first,its)
+                                ConfigObject.config.set("Structures.${structure_key}.loot",loot)
+                                ConfigObject.save()
+                            }
+                            event.clicker.openSetLootGui(structure_key)
+                        }
                 }else if(event.clickEvent().click== ClickType.RIGHT){
                    if(loot.contains(element.first)){
                        loot.remove(element.first)
@@ -91,6 +97,7 @@ object GuiSetLoot {
                         its.shiny()
                         its.lore.add("&a&l本物品已加入了${structure_key}遗迹的战利品列表".colored())
                         its.lore.add("&c&l右键点击把本物品移除${structure_key}遗迹的战利品列表".colored())
+                        its.lore.add("&c&l本战利品在一个宝箱中出现的概率为：${loot[element.first]}".colored())
                     }
                     else {
                         its.lore.add("&a&l左键点击把本物品加入${structure_key}遗迹的战利品列表".colored())

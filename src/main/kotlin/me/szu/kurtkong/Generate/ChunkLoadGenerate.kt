@@ -6,14 +6,17 @@ import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats
 import me.szu.kurtkong.KDungeon
 import me.szu.kurtkong.StructureData
 import me.szu.kurtkong.config.ConfigObject
+import me.szu.kurtkong.config.ItemsObject
 import me.szu.kurtkong.debug
 import me.szu.kurtkong.place
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.event.world.ChunkPopulateEvent
+import org.bukkit.inventory.ItemStack
 
 import taboolib.common.platform.event.SubscribeEvent
 import taboolib.common5.mirrorNow
+import taboolib.library.xseries.getItemStack
 import java.io.File
 import java.io.FileInputStream
 
@@ -29,10 +32,18 @@ object ChunkLoadGenerate {
         format!!.getReader(FileInputStream(file)).use { reader -> clipboard = reader.read() }
         if(!StructureData.addStructure(key, clipboard, loc)) {
             clipboard.close()
+
             return
         }
         clipboard.place(loc,pedestal)
         debug("Éú³É${key}: ${loc.x} ${loc.y} ${loc.z} ")
+        clipboard.close()
+    }
+    private fun setupLoots(clipboard: Clipboard,key: String){
+        val lootKeys=ConfigObject.config.getStringList("Structures.${key}.loot")
+        val loots=ArrayList<ItemStack>(lootKeys.size)
+        lootKeys.forEach { ItemsObject.items.getItemStack(it)?.let { it1 -> loots.add(it1) } }
+
     }
 
     fun shouldGenerate(key:String,loc:Location):Boolean{

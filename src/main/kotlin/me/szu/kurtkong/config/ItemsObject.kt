@@ -11,7 +11,6 @@ object ItemsObject {
 
     fun save(){
         submitAsync {
-
             items.saveToFile(File("plugins/KDungeon/Items.yml"))
         }
     }
