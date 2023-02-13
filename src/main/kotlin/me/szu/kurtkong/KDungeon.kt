@@ -1,5 +1,9 @@
 package me.szu.kurtkong
 
+import com.fastasyncworldedit.bukkit.util.BukkitItemStack
+import com.sk89q.worldedit.bukkit.BukkitAdapter
+import com.sk89q.worldedit.extent.clipboard.Clipboard
+import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats
 import com.sk89q.worldedit.util.formatting.text.TextComponent
 import com.sk89q.worldedit.util.formatting.text.serializer.ComponentSerializer
 import com.sk89q.worldedit.util.formatting.text.serializer.gson.GsonComponentSerializer
@@ -17,6 +21,7 @@ import org.bukkit.block.Sign
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
 import taboolib.common.platform.Plugin
@@ -30,6 +35,8 @@ import taboolib.module.chat.uncolored
 import taboolib.platform.BukkitPlugin
 import taboolib.platform.util.inputBook
 import taboolib.platform.util.isAir
+import java.io.File
+import java.io.FileInputStream
 import kotlin.math.max
 
 
@@ -48,8 +55,29 @@ object KDungeon : Plugin() {
         playerDetectTask= PlayerDetectTask()
         Bukkit.getScheduler().runTaskAsynchronously(plugin, playerDetectTask)
         regcmd()
-        // generateTaskScheduler= GenerateTaskScheduler(10)
         intergrate()
+        fun placeStructure(loc:Location,schem:String,pedestal:Material){
+            var clipboard: Clipboard
+            var file= File(schem)
+            if(!file.exists())return
+            val format = ClipboardFormats.findByFile(file)
+            format!!.getReader(FileInputStream(file)).use { reader -> clipboard = reader.read() }
+            clipboard.region.iterator().forEach {
+                val b=clipboard.getFullBlock(it)
+
+                if(BukkitAdapter.adapt(b.blockType)==Material.CHEST){
+                    FillChest(b, arrayOf(ItemStack(Material.DIRT)))
+                    debug(b.nbt!!.toString())
+                    clipboard.setBlock(it.x,it.y,it.z,b)
+                }
+
+            }
+
+            clipboard.place(loc,pedestal)
+            clipboard.close()
+        }
+
+        placeStructure(Bukkit.getPlayer("Kurt_Kong")!!.location,"D:\\·þÎñ¶Ë´óÈ«\\ÐÇÔÆ¿Õµº\\1.19.2hpy¿Õµºv1.0.6\\plugins\\FastAsyncWorldEdit\\schematics\\t2.schem",Material.DIRT)
 
     }
     fun intergrate(){

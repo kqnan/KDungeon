@@ -38,6 +38,7 @@ repositories {
     maven ( "https://maven.aliyun.com/repository/google")
     maven ( "https://maven.aliyun.com/repository/public" )
     maven(  "https://maven.aliyun.com/repository/gradle-plugin" )
+    maven ("https://repo.codemc.org/repository/maven-public/")
     mavenCentral()
 }
 
@@ -47,6 +48,7 @@ dependencies {
     compileOnly("ink.ptms.core:v11902:11902-minimize:mapped")
     compileOnly("ink.ptms.core:v11902:11902-minimize:universal")
     compileOnly(kotlin("stdlib"))
+    taboo("de.tr7zw:item-nbt-api:2.10.0")
     taboo("com.belerweb:pinyin4j:2.5.0")
     compileOnly(fileTree("libs"))
 }
@@ -69,16 +71,17 @@ configure<JavaPluginConvention> {
 
 publishing {
     repositories {
-        maven {
-            url = uri("https://repo.tabooproject.org/repository/releases")
-            credentials {
-                username = project.findProperty("taboolibUsername").toString()
-                password = project.findProperty("taboolibPassword").toString()
-            }
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-        }
+//        maven {
+//            url = uri("https://repo.tabooproject.org/repository/releases")
+//            credentials {
+//                username = project.findProperty("taboolibUsername").toString()
+//                password = project.findProperty("taboolibPassword").toString()
+//            }
+//            authentication {
+//                create<BasicAuthentication>("basic")
+//            }
+//        }
+        mavenLocal()
     }
     publications {
         create<MavenPublication>("library") {

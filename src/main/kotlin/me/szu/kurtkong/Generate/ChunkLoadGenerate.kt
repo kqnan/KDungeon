@@ -3,12 +3,10 @@ package me.szu.kurtkong.Generate
 import com.sk89q.worldedit.bukkit.BukkitAdapter
 import com.sk89q.worldedit.extent.clipboard.Clipboard
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats
-import me.szu.kurtkong.KDungeon
-import me.szu.kurtkong.StructureData
+import com.sk89q.worldedit.world.block.BaseBlock
+import me.szu.kurtkong.*
 import me.szu.kurtkong.config.ConfigObject
 import me.szu.kurtkong.config.ItemsObject
-import me.szu.kurtkong.debug
-import me.szu.kurtkong.place
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.event.world.ChunkPopulateEvent
@@ -32,18 +30,28 @@ object ChunkLoadGenerate {
         format!!.getReader(FileInputStream(file)).use { reader -> clipboard = reader.read() }
         if(!StructureData.addStructure(key, clipboard, loc)) {
             clipboard.close()
-
             return
+        }
+        val loots=GetLoots(key)
+        clipboard.region.forEach {
+            val b=clipboard.getFullBlock(it)
+            if(BukkitAdapter.adapt(b.blockType)==Material.CHEST){
+                FillChest(b, loots)
+                clipboard.setBlock(it.x,it.y,it.z,b)
+            }
         }
         clipboard.place(loc,pedestal)
         debug("Éú³É${key}: ${loc.x} ${loc.y} ${loc.z} ")
         clipboard.close()
     }
     private fun setupLoots(clipboard: Clipboard,key: String){
-        val lootKeys=ConfigObject.config.getStringList("Structures.${key}.loot")
-        val loots=ArrayList<ItemStack>(lootKeys.size)
-        lootKeys.forEach { ItemsObject.items.getItemStack(it)?.let { it1 -> loots.add(it1) } }
+        val lootKeys=ConfigObject.config.getConfigurationSection("Structures.${key}.loot")?.getKeys(false)?:return
+        for (blockVector3 in clipboard.region.iterator()) {
+            val b=clipboard.getFullBlock(blockVector3)
+            if(BukkitAdapter.adapt(b.blockType)!=Material.CHEST)continue
+            val nbt=b.nbt
 
+        }
     }
 
     fun shouldGenerate(key:String,loc:Location):Boolean{

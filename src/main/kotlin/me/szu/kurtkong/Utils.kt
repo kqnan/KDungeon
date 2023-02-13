@@ -12,14 +12,24 @@ import com.sk89q.worldedit.function.operation.Operation
 import com.sk89q.worldedit.function.operation.Operations
 import com.sk89q.worldedit.math.BlockVector3
 import com.sk89q.worldedit.session.ClipboardHolder
+import com.sk89q.worldedit.util.nbt.CompoundBinaryTag
+import com.sk89q.worldedit.util.nbt.ListBinaryTag
+import com.sk89q.worldedit.world.block.BaseBlock
+import de.tr7zw.changeme.nbtapi.*
+import de.tr7zw.changeme.nbtapi.utils.GsonWrapper
+import de.tr7zw.changeme.nbtapi.utils.ReflectionUtil
 import me.szu.kurtkong.config.ConfigObject
 import net.sourceforge.pinyin4j.PinyinHelper
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.info
+import taboolib.library.reflex.Reflex.Companion.setProperty
 import taboolib.module.chat.colored
+import java.io.ByteArrayInputStream
+import java.nio.charset.Charset
 import kotlin.math.max
 import kotlin.math.min
 
@@ -65,7 +75,33 @@ fun Location.containWithin(loc1:Location,loc2:Location):Boolean{
 fun BlockVector3.toBukkit(world: World):Location{
     return BukkitAdapter.adapt(world,this)
 }
+fun addItemsToChestNbt(items:List<ItemStack>,nbt:CompoundBinaryTag){
 
+}
+fun GetLoots(key:String):Array<ItemStack>{
+    val list=ArrayList<ItemStack>()
+    for (lootKey in ConfigObject.config.getStringList("Structures.${key}.loot")) {
+
+    }
+    return list.toTypedArray()
+}
+fun FillChest(chest:BaseBlock,item:Array<ItemStack> ){
+    val chestNBT=chest.nbtReference?:return
+    val listtag=ListBinaryTag.builder()
+    for ( i in item.indices){
+        if(i>26)break
+        val itemnbt=CompoundBinaryTag.builder()
+        itemnbt.putByte("Slot",i.toByte())
+        itemnbt.putString("id",item[i].type.key.toString())
+        itemnbt.putByte("Count",item[i].amount.toByte())
+        BukkitAdapter.adapt(item[i]).nbt?.let { itemnbt.put("tag", it) }
+        listtag.add(itemnbt.build())
+    }
+    val newnbt=chestNBT.value.put("Items",listtag.build())
+    chestNBT.setProperty("value",newnbt)
+    //debug(chestNBT.value.toString())
+
+}
 fun Clipboard.place(loc: Location,pedestal:Material){
     this.region.iterator().forEach {
         if(this.getFullBlock(it).blockType==BukkitAdapter.asBlockType(Material.BEDROCK)){//原理图的这个位置是基岩
