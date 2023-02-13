@@ -19,6 +19,7 @@ import de.tr7zw.changeme.nbtapi.*
 import de.tr7zw.changeme.nbtapi.utils.GsonWrapper
 import de.tr7zw.changeme.nbtapi.utils.ReflectionUtil
 import me.szu.kurtkong.config.ConfigObject
+import me.szu.kurtkong.config.ItemsObject
 import net.sourceforge.pinyin4j.PinyinHelper
 import org.bukkit.Location
 import org.bukkit.Material
@@ -26,7 +27,9 @@ import org.bukkit.World
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import taboolib.common.platform.function.info
+import taboolib.common.util.random
 import taboolib.library.reflex.Reflex.Companion.setProperty
+import taboolib.library.xseries.getItemStack
 import taboolib.module.chat.colored
 import java.io.ByteArrayInputStream
 import java.nio.charset.Charset
@@ -75,13 +78,14 @@ fun Location.containWithin(loc1:Location,loc2:Location):Boolean{
 fun BlockVector3.toBukkit(world: World):Location{
     return BukkitAdapter.adapt(world,this)
 }
-fun addItemsToChestNbt(items:List<ItemStack>,nbt:CompoundBinaryTag){
 
-}
 fun GetLoots(key:String):Array<ItemStack>{
     val list=ArrayList<ItemStack>()
-    for (lootKey in ConfigObject.config.getStringList("Structures.${key}.loot")) {
-
+    for (lootKey in (ConfigObject.config.getConfigurationSection("Structures.${key}.loot")?:return list.toTypedArray()).getKeys(false)) {
+        val chance=ConfigObject.config.getInt("Structures.${key}.loot.${lootKey}",0)
+        if(random(1,100)<chance){
+            ItemsObject.items.getItemStack(lootKey)?.let { list.add(it) }
+        }
     }
     return list.toTypedArray()
 }

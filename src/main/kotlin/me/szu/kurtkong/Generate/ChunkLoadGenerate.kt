@@ -32,10 +32,11 @@ object ChunkLoadGenerate {
             clipboard.close()
             return
         }
-        val loots=GetLoots(key)
+
         clipboard.region.forEach {
             val b=clipboard.getFullBlock(it)
             if(BukkitAdapter.adapt(b.blockType)==Material.CHEST){
+                val loots=GetLoots(key)
                 FillChest(b, loots)
                 clipboard.setBlock(it.x,it.y,it.z,b)
             }

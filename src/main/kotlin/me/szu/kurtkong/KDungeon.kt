@@ -56,28 +56,28 @@ object KDungeon : Plugin() {
         Bukkit.getScheduler().runTaskAsynchronously(plugin, playerDetectTask)
         regcmd()
         intergrate()
-        fun placeStructure(loc:Location,schem:String,pedestal:Material){
-            var clipboard: Clipboard
-            var file= File(schem)
-            if(!file.exists())return
-            val format = ClipboardFormats.findByFile(file)
-            format!!.getReader(FileInputStream(file)).use { reader -> clipboard = reader.read() }
-            clipboard.region.iterator().forEach {
-                val b=clipboard.getFullBlock(it)
-
-                if(BukkitAdapter.adapt(b.blockType)==Material.CHEST){
-                    FillChest(b, arrayOf(ItemStack(Material.DIRT)))
-                    debug(b.nbt!!.toString())
-                    clipboard.setBlock(it.x,it.y,it.z,b)
-                }
-
-            }
-
-            clipboard.place(loc,pedestal)
-            clipboard.close()
-        }
-
-        placeStructure(Bukkit.getPlayer("Kurt_Kong")!!.location,"D:\\·þÎñ¶Ë´óÈ«\\ÐÇÔÆ¿Õµº\\1.19.2hpy¿Õµºv1.0.6\\plugins\\FastAsyncWorldEdit\\schematics\\t2.schem",Material.DIRT)
+//        fun placeStructure(loc:Location,schem:String,pedestal:Material){
+//            var clipboard: Clipboard
+//            var file= File(schem)
+//            if(!file.exists())return
+//            val format = ClipboardFormats.findByFile(file)
+//            format!!.getReader(FileInputStream(file)).use { reader -> clipboard = reader.read() }
+//            clipboard.region.iterator().forEach {
+//                val b=clipboard.getFullBlock(it)
+//
+//                if(BukkitAdapter.adapt(b.blockType)==Material.CHEST){
+//                    FillChest(b, arrayOf(ItemStack(Material.DIRT)))
+//                    debug(b.nbt!!.toString())
+//                    clipboard.setBlock(it.x,it.y,it.z,b)
+//                }
+//
+//            }
+//
+//            clipboard.place(loc,pedestal)
+//            clipboard.close()
+//        }
+//
+//        placeStructure(Bukkit.getPlayer("Kurt_Kong")!!.location,"D:\\·þÎñ¶Ë´óÈ«\\ÐÇÔÆ¿Õµº\\1.19.2hpy¿Õµºv1.0.6\\plugins\\FastAsyncWorldEdit\\schematics\\t2.schem",Material.DIRT)
 
     }
     fun intergrate(){
